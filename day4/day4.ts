@@ -1,80 +1,52 @@
-const Directions = ["NW", "N", "NE", "E", "SE", "S", "SW", "W"] as const;
-type Direction = (typeof Directions)[number];
+import {
+  E,
+  Grid,
+  N,
+  NE,
+  NW,
+  S,
+  SE,
+  SW,
+  W,
+  XY,
+  getFromDirection,
+  sumGrid,
+} from "../utils/grid";
 
-const dirMap: { [key in Direction]: [number, number] } = {
-  NW: [-1, -1],
-  N: [0, -1],
-  NE: [1, -1],
-  E: [1, 0],
-  SE: [1, 1],
-  S: [0, 1],
-  SW: [-1, 1],
-  W: [-1, 0],
-};
-
-function findWordsAtPosition(
-  input: string[][],
-  word: string,
-  startX: number,
-  startY: number
-) {
-  return Directions.filter((direction) => {
-    let [dirX, dirY] = dirMap[direction];
-    let x = startX;
-    let y = startY;
-    for (let i = 1; i < word.length; i++) {
-      x = x + dirX;
-      y = y + dirY;
-
-      const val = input[y]?.[x];
-      if (val !== word[i]) {
-        return false;
-      }
-    }
-    return true;
-  }).length;
+function parseInput(input: string) {
+  return input.split("\n").map((line) => line.split(""));
 }
+
+const directions: XY[] = [NW, N, NE, E, SE, S, SW, W];
+
+const testDirection = (grid: Grid, xy: XY, dir: XY) =>
+  ["X", "M", "A", "S"].every(
+    (letter, i) => letter === getFromDirection(grid, dir, xy, i)
+  );
+
+const findWordsAtPosition = (grid: Grid, xy: XY) =>
+  directions.filter((dir) => testDirection(grid, xy, dir)).length;
 
 export function day4part1(input: string) {
-  const lines = input.split("\n").map((line) => line.split(""));
-
-  let total = 0;
-  for (let y = 0; y < lines.length; y++) {
-    let line = lines[y];
-    for (let x = 0; x < line.length; x++) {
-      if (line[x] === "X") {
-        total += findWordsAtPosition(lines, "XMAS", x, y);
-      }
-    }
-  }
-  return total;
+  return sumGrid(parseInput(input), findWordsAtPosition);
 }
 
-function isMasX(lines: string[][], x: number, y: number) {
-  const nw = lines[y - 1]?.[x - 1];
-  const ne = lines[y - 1]?.[x + 1];
-  const sw = lines[y + 1]?.[x - 1];
-  const se = lines[y + 1]?.[x + 1];
+function isMasX(lines: Grid, xy: XY): number {
+  const [x, y] = xy;
+  if (lines[y][x] !== "A") {
+    return 0;
+  }
+  const nw = getFromDirection(lines, NW, xy);
+  const ne = getFromDirection(lines, NE, xy);
+  const sw = getFromDirection(lines, SW, xy);
+  const se = getFromDirection(lines, SE, xy);
 
-  return (
+  return Number(
     ((nw == "M" && se === "S") || (nw === "S" && se === "M")) &&
-    ((ne === "S" && sw === "M") || (ne === "M" && sw === "S"))
+      ((ne === "S" && sw === "M") || (ne === "M" && sw === "S"))
   );
 }
 
 export function day4part2(input: string) {
-  const lines = input.split("\n").map((line) => line.split(""));
-
-  let total = 0;
-  for (let y = 1; y < lines.length - 1; y++) {
-    let line = lines[y];
-    for (let x = 1; x < line.length - 1; x++) {
-      if (line[x] === "A") {
-        if (isMasX(lines, x, y) ? 1 : 0) {
-          total++;
-        }
-      }
-    }
-  }
-  return total;
+  return sumGrid(parseInput(input), isMasX);
 }
