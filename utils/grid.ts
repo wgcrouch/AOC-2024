@@ -12,11 +12,46 @@ export const W: XY = [-1, 0];
 
 export function getFromDirection<TVal>(
   grid: Grid<TVal>,
-  [dx, dy]: XY,
-  [x, y]: XY = [0, 0],
+  dir: XY,
+  current: XY = [0, 0],
   steps = 1
 ) {
-  return grid[y + dy * steps]?.[x + dx * steps];
+  const newPos = move(grid, current, dir, steps);
+  if (!newPos) {
+    return undefined;
+  }
+  const [x, y] = newPos;
+  return grid[y]?.[x];
+}
+
+export function move<TVal>(
+  grid: Grid<TVal>,
+  [x, y]: XY,
+  [dx, dy]: XY,
+  steps = 1
+): XY | undefined {
+  const newX = x + dx * steps;
+  if (newX >= grid[y].length || newX < 0) {
+    return undefined;
+  }
+  const newY = y + dy * steps;
+
+  if (newY >= grid.length || newY < 0) {
+    return undefined;
+  }
+
+  return [x + dx * steps, y + dy * steps];
+}
+
+export function findInGrid(grid: Grid, s: string): XY | undefined {
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid.length; x++) {
+      if (grid[y][x] === s) {
+        return [x, y];
+      }
+    }
+  }
+  return undefined;
 }
 
 export function sumGrid<TVal>(
