@@ -33,6 +33,17 @@ export function getFromDirection<TVal>(
   return grid[y]?.[x];
 }
 
+export function getAt<TVal>(grid: Grid<TVal>, [x, y]: XY): TVal {
+  return grid[y]?.[x];
+}
+
+export function setAt<TVal>(grid: Grid<TVal>, pos: XY, val: TVal) {
+  const [x, y] = pos;
+  if (inBounds(grid, pos)) {
+    grid[y][x] = val;
+  }
+}
+
 export function move<TVal>(
   grid: Grid<TVal>,
   [x, y]: XY,
@@ -61,6 +72,24 @@ export function findInGrid(grid: Grid, s: string): XY | undefined {
     }
   }
   return undefined;
+}
+
+export function reduceGrid<TVal, TReturn>(
+  grid: Grid<TVal>,
+  cb: (acc: TReturn, vsl: TVal, x: number, y: number) => TReturn,
+  initial: TReturn
+): TReturn {
+  let acc = initial;
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[y].length; x++) {
+      acc = cb(acc, grid[y]?.[x], x, y);
+    }
+  }
+  return acc;
+}
+
+export function inBounds(grid: Grid<any>, [x, y]: XY): boolean {
+  return y >= 0 && y < grid.length && x >= 0 && x < grid[0].length;
 }
 
 export function sumGrid<TVal>(
