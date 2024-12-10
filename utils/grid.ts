@@ -76,13 +76,13 @@ export function findInGrid(grid: Grid, s: string): XY | undefined {
 
 export function reduceGrid<TVal, TReturn>(
   grid: Grid<TVal>,
-  cb: (acc: TReturn, vsl: TVal, x: number, y: number) => TReturn,
+  cb: (acc: TReturn, val: TVal, xy: XY) => TReturn,
   initial: TReturn
 ): TReturn {
   let acc = initial;
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
-      acc = cb(acc, grid[y]?.[x], x, y);
+      acc = cb(acc, grid[y]?.[x], [x, y]);
     }
   }
   return acc;
@@ -103,4 +103,20 @@ export function sumGrid<TVal>(
     }
   }
   return total;
+}
+
+export function getAllNeighbours<TVal>(grid: Grid<TVal>, xy: XY): Array<XY> {
+  const neighbours = [NW, N, NE, W, E, SW, S, SE]
+    .map((dir) => move(grid, xy, dir))
+    .filter((x) => x !== undefined);
+
+  return neighbours;
+}
+
+export function getNeighbours<TVal>(grid: Grid<TVal>, xy: XY): Array<XY> {
+  const neighbours = [N, W, E, S]
+    .map((dir) => move(grid, xy, dir))
+    .filter((x) => x !== undefined);
+
+  return neighbours;
 }

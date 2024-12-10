@@ -15,7 +15,7 @@ function pairs<TVal>(arr: Array<TVal>, cb: (pair: [TVal, TVal]) => void) {
 function getLettersMap(grid: Grid<string>) {
   return reduceGrid(
     grid,
-    (acc, val, x, y) => {
+    (acc, val, [x, y]) => {
       if (val !== ".") {
         let e = acc.get(val) ?? [];
         e.push([x, y]);
