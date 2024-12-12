@@ -14,10 +14,10 @@ describe("day 11", () => {
   });
 
   test("day 11 part 2 example 1", () => {
-    expect(day11part2(day11Example1)).toEqual(81);
+    expect(day11part2(day11Example1)).toEqual(65601038650482);
   });
 
   test("day 11 part 2 real", () => {
-    expect(day11part2(day11input)).toEqual(1225);
+    expect(day11part2(day11input)).toEqual(259755538429618);
   });
 });
