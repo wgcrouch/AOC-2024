@@ -33,8 +33,17 @@ export function getFromDirection<TVal>(
   return grid[y]?.[x];
 }
 
-export function getAt<TVal>(grid: Grid<TVal>, [x, y]: XY): TVal {
-  return grid[y]?.[x];
+export function getAt<TVal>(
+  grid: Grid<TVal>,
+  xy: XY | undefined
+): TVal | undefined {
+  if (!xy) {
+    return undefined;
+  }
+  if (!inBounds(grid, xy)) {
+    return undefined;
+  }
+  return grid[xy[1]]?.[xy[0]];
 }
 
 export function setAt<TVal>(grid: Grid<TVal>, pos: XY, val: TVal) {
@@ -119,4 +128,18 @@ export function getNeighbours<TVal>(grid: Grid<TVal>, xy: XY): Array<XY> {
     .filter((x) => x !== undefined);
 
   return neighbours;
+}
+
+export class xyCache<TVal = boolean> {
+  cache: Array<Array<TVal>> = [];
+
+  add(xy: XY, val: TVal) {
+    const [x, y] = xy;
+    this.cache[y] = this.cache[y] ?? [];
+    this.cache[y][x] = val;
+  }
+
+  get([x, y]: XY) {
+    return this.cache[y]?.[x];
+  }
 }
