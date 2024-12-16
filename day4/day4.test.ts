@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { day4part1, day4part2 } from "./day4";
-import { day4input } from "../input";
+import { day4input } from "../input/day4";
 
 const day4Example1 = `
 ..X...

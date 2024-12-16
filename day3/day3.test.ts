@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { day3part1, day3part2 } from "./day3";
-import { day3input } from "../input";
+import { day3input } from "../input/day3";
 
 const day3Example1 = `xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))`;
 
